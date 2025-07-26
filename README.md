@@ -1,4 +1,4 @@
-A React Native reminder app with backend integration to manage, add, edit, and delete reminders. Supports recurring tasks, categories, and a calendar view. Includes user authentication and achievement tracking.
+A React Native reminder app with backend integration to manage, add, edit, and delete reminders. Supports recurring reminders, categories, and a calendar view. Includes user authentication and achievement tracking.
 
 Features
 

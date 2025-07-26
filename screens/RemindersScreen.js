@@ -17,7 +17,7 @@ import { ThemeContext } from '../ThemeContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import BASE_URL from './config';
+import BASE_URL from '../config';
 
 const categories = ['All', 'Work', 'Personal', 'Urgent', 'Other'];
 const recurringOptions = ['None', 'Daily', 'Weekly', 'Monthly'];
@@ -46,7 +46,7 @@ function parseDateTime(datetimeStr) {
   return isNaN(d) ? new Date() : d;
 }
 
-export default function RemindersScreen({ user, profilePic, navigation }) {
+export default function RemindersScreen({ user, navigation }) {
   const { darkMode } = useContext(ThemeContext);
 
   const [modalVisible, setModalVisible] = useState(false);

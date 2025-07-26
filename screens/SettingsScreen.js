@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { ThemeContext } from '../ThemeContext';
-import BASE_URL from './config';
+import BASE_URL from '../config';
 
 export default function SettingsScreen({ navigation, user }) {
   const { darkMode, setDarkMode } = useContext(ThemeContext);

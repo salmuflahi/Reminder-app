@@ -33,7 +33,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function TabNavigator({ user, profilePic }) {
+function TabNavigator({ user, }) {
   const { darkMode } = useContext(ThemeContext);
 
   return (
@@ -64,7 +64,7 @@ function TabNavigator({ user, profilePic }) {
         })}
       >
         {(props) => (
-          <RemindersScreen {...props} user={user} profilePic={profilePic} />
+          <RemindersScreen {...props} user={user} />
         )}
       </Tab.Screen>
 
@@ -163,7 +163,7 @@ function CustomDrawerContent(props) {
   );
 }
 
-function DrawerNavigator({ user, setUser, profilePic, setProfilePic }) {
+function DrawerNavigator({ user, setUser,}) {
   const { darkMode } = useContext(ThemeContext);
 
   return (
@@ -181,8 +181,6 @@ function DrawerNavigator({ user, setUser, profilePic, setProfilePic }) {
           <TabNavigator
             {...props}
             user={user}
-            profilePic={profilePic}
-            setProfilePic={setProfilePic}
           />
         )}
       </Drawer.Screen>
@@ -197,7 +195,6 @@ function DrawerNavigator({ user, setUser, profilePic, setProfilePic }) {
 
 function AppNavigator() {
   const [user, setUser] = useState(null);
-  const [profilePic, setProfilePic] = useState(null);
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
   useEffect(() => {
@@ -211,16 +208,13 @@ function AppNavigator() {
         .then(data => {
           if (data.status === 'success') {
             const profile = data.profile;
-            setProfilePic(null);
             setDarkMode(profile.dark_mode);
           }
         })
         .catch(() => {
-          setProfilePic(null);
           setDarkMode(true);
         });
     } else {
-      setProfilePic(null);
       setDarkMode(true);
     }
   }, [user]);
@@ -239,8 +233,6 @@ function AppNavigator() {
                 {...props}
                 user={user}
                 setUser={setUser}
-                profilePic={profilePic}
-                setProfilePic={setProfilePic}
               />
             )}
           </Stack.Screen>

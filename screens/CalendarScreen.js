@@ -178,7 +178,7 @@ export default function CalendarScreen() {
 
     // Prepare payload for backend
     const payload = {
-      user: "someUser", // replace with real user
+      user: "someUser",
       title: modalData.title.trim(),
       time: `${selectedDate}T${convertTo24Hour(modalData.time)}`,
       category: modalData.category,
@@ -314,16 +314,20 @@ export default function CalendarScreen() {
         onDayPress={(day) => setSelectedDate(day.dateString)}
         markedDates={markedDates}
         markingType={"multi-dot"}
-        theme={{
-          backgroundColor: darkMode ? "#121212" : "#fff",
-          calendarBackground: darkMode ? "#121212" : "#fff",
-          textSectionTitleColor: darkMode ? "#eee" : "#333",
-          dayTextColor: darkMode ? "#eee" : "#333",
-          monthTextColor: darkMode ? "#66aaff" : "#007bff",
-          selectedDayBackgroundColor: darkMode ? "#3399ff" : "#007bff",
-          selectedDayTextColor: "#fff",
-          todayTextColor: darkMode ? "#66aaff" : "#007bff",
-          arrowColor: darkMode ? "#66aaff" : "#007bff",
+          theme={{
+    backgroundColor: darkMode ? "#121212" : "#fff",
+    calendarBackground: darkMode ? "#121212" : "#fff",
+    textSectionTitleColor: darkMode ? "#eee" : "#333",    // Month names, weekdays labels
+    textDisabledColor: darkMode ? "#555" : "#d9e1e8",     // Disabled days color
+    selectedDayBackgroundColor: darkMode ? "#3399ff" : "#007bff",
+    selectedDayTextColor: "#fff",
+    todayTextColor: darkMode ? "#66aaff" : "#007bff",
+    dayTextColor: darkMode ? "#eee" : "#333",             // Normal day numbers
+    arrowColor: darkMode ? "#66aaff" : "#007bff",
+    monthTextColor: darkMode ? "#66aaff" : "#007bff",
+    dotColor: darkMode ? "#3399ff" : "#007bff",            // The dots under dates
+    selectedDotColor: "#ffffff",
+    disabledArrowColor: darkMode ? "#444" : "#d9e1e8",
         }}
       />
 

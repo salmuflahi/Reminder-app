@@ -36,7 +36,20 @@ def init_db():
                 submitted_at TEXT DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS reminders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user TEXT NOT NULL,
+                title TEXT NOT NULL,
+                time TEXT NOT NULL,
+                category TEXT DEFAULT 'All',
+                done INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                recurring TEXT DEFAULT 'None'
+            )
+        ''')
         conn.commit()
+
 
         
 def update_db_schema():

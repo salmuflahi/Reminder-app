@@ -22,7 +22,7 @@ import BASE_URL from '../config';
 const categories = ['All', 'Work', 'Personal', 'Urgent', 'Other'];
 const recurringOptions = ['None', 'Daily', 'Weekly', 'Monthly'];
 const categoryColors = {
-  Work: '#007AFF',
+  Work: '#ffae00ff',
   Personal: '#4CAF50',
   Urgent: '#FF3B30',
   Other: '#8E8E93',

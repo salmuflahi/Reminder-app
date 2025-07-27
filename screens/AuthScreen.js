@@ -18,33 +18,41 @@ export default function AuthScreen({ onLogin }) {
   const [password, setPassword] = useState('');
 
   const authUser = () => {
-    if (!username.trim() || !password.trim()) {
-      Alert.alert('Please enter username and password');
-      return;
-    }
-    const endpoint = isLogin ? 'login' : 'signup';
+  if (!username.trim() || !password.trim()) {
+    Alert.alert('Please enter username and password');
+    return;
+  }
+  const endpoint = isLogin ? 'login' : 'signup';
 
-    fetch(`${BASE_URL}/${endpoint}`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ username, password }),
-})
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (isLogin) {
-            Alert.alert('Login successful!');
-            onLogin(username);
-          } else {
-            Alert.alert('Signup successful! Please login.');
-            setIsLogin(true);
-          }
+  fetch(`${BASE_URL}/${endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+    .then(res => {
+      console.log('Fetch response status:', res.status);
+      return res.json();
+    })
+    .then(data => {
+      console.log('Fetch response data:', data);
+      if (data.status === 'success') {
+        if (isLogin) {
+          Alert.alert('Login successful!');
+          onLogin(username);
         } else {
-          Alert.alert(data.message || 'Authentication failed');
+          Alert.alert('Signup successful! Please login.');
+          setIsLogin(true);
         }
-      })
-      .catch(() => Alert.alert('Auth request failed'));
-  };
+      } else {
+        Alert.alert(data.message || 'Authentication failed');
+      }
+    })
+    .catch((error) => {
+      console.log('Fetch error:', error);
+      Alert.alert('Auth request failed', error.message);
+    });
+};
+
 
   return (
     <KeyboardAvoidingView
@@ -90,6 +98,7 @@ export default function AuthScreen({ onLogin }) {
     </KeyboardAvoidingView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

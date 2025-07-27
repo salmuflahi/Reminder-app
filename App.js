@@ -10,7 +10,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import AuthScreen from './screens/AuthScreen';
 import RemindersScreen from './screens/RemindersScreen';
-import BlankScreen from './screens/BlankScreen';
+import DashboardScreen from './screens/DashboardScreen';
 import CalendarScreen from './screens/CalendarScreen';
 import AchievementsScreen from './screens/AchievementsScreen';
 import SettingsScreen from './screens/SettingsScreen';
@@ -33,7 +33,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function TabNavigator({ user, }) {
+function TabNavigator({ user }) {
   const { darkMode } = useContext(ThemeContext);
 
   return (
@@ -47,7 +47,7 @@ function TabNavigator({ user, }) {
       }}
     >
       <Tab.Screen
-        name="Tasks"
+        name="Reminders"
         options={({ navigation }) => ({
           headerLeft: () => (
             <TouchableOpacity
@@ -77,12 +77,16 @@ function TabNavigator({ user, }) {
       />
 
       <Tab.Screen
-        name="Blank"
-        component={BlankScreen}
+        name="Dashboard"
         options={{
-          tabBarIcon: ({ color, size }) => <FontAwesome name="circle-thin" color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="th-large" color={color} size={size} />
+          ),
         }}
-      />
+      >
+        {(props) => <DashboardScreen {...props} username={user} />}
+      </Tab.Screen>
+
     </Tab.Navigator>
   );
 }
@@ -131,7 +135,6 @@ function SettingsStack(props) {
   return <StackScreen {...props} />;
 }
 
-// 👉 Custom Drawer Content with Logout Button
 function CustomDrawerContent(props) {
   const { setUser } = props;
 
@@ -163,7 +166,7 @@ function CustomDrawerContent(props) {
   );
 }
 
-function DrawerNavigator({ user, setUser,}) {
+function DrawerNavigator({ user, setUser }) {
   const { darkMode } = useContext(ThemeContext);
 
   return (
@@ -185,8 +188,14 @@ function DrawerNavigator({ user, setUser,}) {
         )}
       </Drawer.Screen>
 
-      <Drawer.Screen name="Achievements" component={AchievementsStack} options={{ drawerLabel: 'Achievements' }} />
-      <Drawer.Screen name="Settings">{(props) => <SettingsStack {...props} user={user} />}</Drawer.Screen>
+      <Drawer.Screen name="Achievements" options={{ drawerLabel: 'Achievements' }}>
+        {(props) => <AchievementsStack {...props} user={user} />}
+      </Drawer.Screen>
+
+      <Drawer.Screen name="Settings">
+        {(props) => <SettingsStack {...props} user={user} />}
+      </Drawer.Screen>
+
       <Drawer.Screen name="Support" component={SupportStack} options={{ drawerLabel: 'Support' }} />
       <Drawer.Screen name="About" component={AboutStack} options={{ drawerLabel: 'About' }} />
     </Drawer.Navigator>
@@ -198,7 +207,32 @@ function AppNavigator() {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
+    async function registerNotifications() {
+      const token = await registerForPushNotificationsAsync();
+      if (token) {
+        console.log('Registered for push notifications with token:', token);
+        // Optionally send token to backend here
+      }
+    }
+    registerNotifications();
+
+    // Listen for notifications received while app is foregrounded
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received:', notification);
+      // You can update UI or state here if needed
+    });
+
+    // Listen for user's interaction with notifications (tap, etc)
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Notification response:', response);
+      // Handle navigation or actions here if needed
+    });
+
+    // Cleanup listeners on unmount
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
   }, []);
 
   useEffect(() => {

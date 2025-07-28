@@ -4,13 +4,13 @@
     "slug": "RemindMe",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/RemindMe-logo.png",
+    "icon": "./assets/RemindMe-applogo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/RemindMe-logo.png",
+      "image": "./assets/RemindMe-applogo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2D324B"
     },
     "ios": {
       "supportsTablet": true
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+       "backgroundColor": "#2D324B"
       },
       "edgeToEdgeEnabled": true
     },

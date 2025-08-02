@@ -4,11 +4,12 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { Alert } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import axios from 'axios';
+import { BASE_URL } from './config';
 
 import { ThemeContext } from './ThemeContext';
 
 import TabNavigator from './TabNavigator'; 
-
 import AchievementsScreen from './screens/AchievementsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import SupportScreen from './screens/SupportScreen';
@@ -45,9 +46,26 @@ export default function DrawerNavigator({ user, setUser, profilePic, setProfileP
   const { darkMode } = useContext(ThemeContext);
 
   function CustomDrawerContent(props) {
+    const deleteAccount = async () => {
+      try {
+        const response = await axios.delete(`${BASE_URL}/delete_account/${user.username}`);
+        if (response.status === 200) {
+          Alert.alert("Account Deleted", "Your account has been deleted.");
+          setUser(null);
+          setProfilePic(null);
+        } else {
+          Alert.alert("Error", "Something went wrong. Try again later.");
+        }
+      } catch (err) {
+        Alert.alert("Error", "Could not delete your account.");
+      }
+    };
+
     return (
       <DrawerContentScrollView {...props} style={{ backgroundColor: darkMode ? '#222' : '#fff' }}>
         <DrawerItemList {...props} />
+
+        {/* Logout Button */}
         <DrawerItem
           label="Logout"
           icon={({ color, size }) => <FontAwesome name="sign-out" size={size} color={color} />}
@@ -65,6 +83,28 @@ export default function DrawerNavigator({ user, setUser, profilePic, setProfileP
                     setUser(null);
                     setProfilePic(null);
                   }
+                }
+              ],
+              { cancelable: true }
+            );
+          }}
+        />
+
+        {/* Delete Account Button */}
+        <DrawerItem
+          label="Delete Account"
+          icon={({ color, size }) => <FontAwesome name="trash" size={size} color={color} />}
+          labelStyle={{ fontWeight: '600', color: darkMode ? '#fff' : '#ff4d4f' }}
+          onPress={() => {
+            Alert.alert(
+              "Delete Account",
+              "Are you sure you want to delete your account? This action cannot be undone.",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: deleteAccount
                 }
               ],
               { cancelable: true }
@@ -116,7 +156,6 @@ export default function DrawerNavigator({ user, setUser, profilePic, setProfileP
         component={AboutScreen}
         options={{ drawerLabel: 'About' }}
       />
-
     </Drawer.Navigator>
   );
 }

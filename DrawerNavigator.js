@@ -46,11 +46,25 @@ export default function DrawerNavigator({ user, setUser, profilePic, setProfileP
   const { darkMode } = useContext(ThemeContext);
 
   function CustomDrawerContent(props) {
+    const deleteAccount = async () => {
+      try {
+        const response = await axios.delete(`${BASE_URL}/delete_user/${user.username}`);
+        if (response.status === 200) {
+          Alert.alert("Account Deleted", "Your account has been deleted.");
+          setUser(null);
+          setProfilePic(null);
+        } else {
+          Alert.alert("Error", "Something went wrong. Try again later.");
+        }
+      } catch (err) {
+        Alert.alert("Error", "Could not delete your account.");
+      }
+    };
+
     return (
       <DrawerContentScrollView {...props} style={{ backgroundColor: darkMode ? '#222' : '#fff' }}>
         <DrawerItemList {...props} />
 
-        {/* Logout Button */}
         <DrawerItem
           label="Logout"
           icon={({ color, size }) => <FontAwesome name="sign-out" size={size} color={color} />}
@@ -75,7 +89,6 @@ export default function DrawerNavigator({ user, setUser, profilePic, setProfileP
           }}
         />
 
-        {/* Delete Account Button */}
         <DrawerItem
           label="Delete Account"
           icon={({ color, size }) => <FontAwesome name="trash" size={size} color={color} />}

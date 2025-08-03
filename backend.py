@@ -17,7 +17,7 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                dark_mode INTEGER DEFAULT 0,
+                dark_mode INTEGER DEFAULT 1,  -- Changed default to 1 (dark mode ON)
                 email TEXT DEFAULT '',
                 phone TEXT DEFAULT '',
                 notifications_enabled INTEGER DEFAULT 0,
@@ -68,6 +68,9 @@ def update_db_schema():
         try: cursor.execute("ALTER TABLE users ADD COLUMN notification_sound TEXT DEFAULT 'default'")
         except sqlite3.OperationalError: pass
         try: cursor.execute("ALTER TABLE users ADD COLUMN lock_screen_enabled INTEGER DEFAULT 0")
+        except sqlite3.OperationalError: pass
+        # Make sure dark_mode column default is 1 if added later
+        try: cursor.execute("ALTER TABLE users ADD COLUMN dark_mode INTEGER DEFAULT 1")
         except sqlite3.OperationalError: pass
         try: cursor.execute("ALTER TABLE reminders ADD COLUMN recurring TEXT DEFAULT 'None'")
         except sqlite3.OperationalError: pass

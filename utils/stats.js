@@ -1,4 +1,4 @@
-import BASE_URL from '../config'; // adjust path if needed
+import BASE_URL from '../config';
 
 export async function getCompletedTasksCount(user) {
   try {

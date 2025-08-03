@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Linking, TouchableOpacity, ScrollView } from 'react-native';
-import { ThemeContext } from '../ThemeContext'; // adjust path if needed
+import { ThemeContext } from '../ThemeContext';
 
 export default function AboutScreen() {
   const { darkMode } = useContext(ThemeContext);

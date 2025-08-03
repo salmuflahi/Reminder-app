@@ -69,7 +69,6 @@ def update_db_schema():
         except sqlite3.OperationalError: pass
         try: cursor.execute("ALTER TABLE users ADD COLUMN lock_screen_enabled INTEGER DEFAULT 0")
         except sqlite3.OperationalError: pass
-        # Make sure dark_mode column default is 1 if added later
         try: cursor.execute("ALTER TABLE users ADD COLUMN dark_mode INTEGER DEFAULT 1")
         except sqlite3.OperationalError: pass
         try: cursor.execute("ALTER TABLE reminders ADD COLUMN recurring TEXT DEFAULT 'None'")
@@ -138,7 +137,7 @@ def signup():
 
     try:
         with sqlite3.connect(DB_NAME) as conn:
-            conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            conn.execute("INSERT INTO users (username, password, dark_mode) VALUES (?, ?, ?)", (username, password, 1))
             conn.commit()
         return jsonify({"status": "success", "message": "User registered"})
     except sqlite3.IntegrityError:

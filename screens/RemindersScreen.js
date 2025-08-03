@@ -52,7 +52,7 @@ export default function RemindersScreen({ user, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(null); // 'date' or 'time'
+  const [showPicker, setShowPicker] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [category, setCategory] = useState('Personal');
@@ -477,7 +477,7 @@ export default function RemindersScreen({ user, navigation }) {
             {showPicker && (
               <DateTimePicker
                 value={date}
-                mode={showPicker} // 'date' or 'time'
+                mode={showPicker}
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                 onChange={(event, selectedDate) => {
                   if (Platform.OS !== 'ios') setShowPicker(null);

@@ -71,12 +71,12 @@ export default function CalendarScreen() {
 
   // Filter states
   const [filterCategory, setFilterCategory] = useState("All");
-  const [filterDone, setFilterDone] = useState("All"); // 'All', 'Done', 'Not Done'
+  const [filterDone, setFilterDone] = useState("All"); 
   const [searchTerm, setSearchTerm] = useState("");
 
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); // 'add' or 'edit'
+  const [modalMode, setModalMode] = useState("add"); 
   const [modalData, setModalData] = useState({
     id: null,
     title: "",
@@ -86,15 +86,13 @@ export default function CalendarScreen() {
     done: false,
   });
 
-  // DateTimePicker state for time input
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  // Today button helper
   const todayStr = new Date().toISOString().split("T")[0];
 
   // Fetch reminders from backend (example endpoint)
   useEffect(() => {
-    fetch(`${BASE_URL}/activities`)// Adjust backend URL here
+    fetch(`${BASE_URL}/activities`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -107,10 +105,9 @@ export default function CalendarScreen() {
   // Filter reminders by selected date, filter, search
   const filteredReminders = useMemo(() => {
     return reminders
-      .filter((r) => r.user === "someUser") // Replace with actual user if needed
+      .filter((r) => r.user === "someUser")
       .filter((r) => r.time && r.title)
       .filter((r) => {
-        // Match selected date
         return r.time.includes(selectedDate);
       })
       .filter((r) => {
@@ -130,19 +127,18 @@ export default function CalendarScreen() {
   // Mark dates with dots by categories and counts
   const markedDates = useMemo(() => {
     const marks = {};
-    // Group reminders by date
     const remindersByDate = {};
     reminders.forEach((r) => {
-      const dateKey = r.time.split("T")[0] || r.time; // handle time format
+      const dateKey = r.time.split("T")[0] || r.time; 
       if (!remindersByDate[dateKey]) remindersByDate[dateKey] = [];
       remindersByDate[dateKey].push(r);
     });
+
     // Create marks with dots and counts
     Object.entries(remindersByDate).forEach(([date, rems]) => {
       const dots = [];
       const categories = new Set();
       rems.forEach((r) => categories.add(r.category || "All"));
-      // You can assign color per category:
       const categoryColors = {
         All: "gray",
         Work: "blue",
@@ -201,7 +197,6 @@ export default function CalendarScreen() {
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
-          // Refresh reminders after change
           fetch(`${BASE_URL}/activities`)
             .then((res) => res.json())
             .then((data) => {

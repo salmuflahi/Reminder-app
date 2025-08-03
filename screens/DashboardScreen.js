@@ -32,7 +32,7 @@ const tips = [
   "Do your top priorities first.",
 ];
 
-// Helper functions
+
 function getWeekStartDate(date) {
   const d = new Date(date);
   d.setDate(d.getDate() - d.getDay());

@@ -18,7 +18,7 @@ export default function SettingsScreen({ navigation, user }) {
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('********'); // masked by default
+  const [password, setPassword] = useState('********'); 
   const [passwordChanged, setPasswordChanged] = useState(false);
 
   // Fetch profile on mount or when user changes

@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect, useContext } from 'react';
 import { TouchableOpacity, View, Text, Alert } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, DrawerActions } from '@react-navigation/native';
@@ -7,6 +6,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Notifications from 'expo-notifications';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios';
 
 import AuthScreen from './screens/AuthScreen';
 import RemindersScreen from './screens/RemindersScreen';
@@ -136,7 +136,7 @@ function SettingsStack(props) {
 }
 
 function CustomDrawerContent(props) {
-  const { setUser } = props;
+  const { user, setUser } = props;
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to log out?', [
@@ -151,6 +151,20 @@ function CustomDrawerContent(props) {
     ]);
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/delete_user/${user}`);
+      if (response.data.status === "success") {
+        Alert.alert("Account Deleted", "Your account has been deleted.");
+        setUser(null);
+      } else {
+        Alert.alert("Error", "Something went wrong.");
+      }
+    } catch (err) {
+      Alert.alert("Error", "Failed to delete your account.");
+    }
+  };
+
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
@@ -162,6 +176,24 @@ function CustomDrawerContent(props) {
         )}
         onPress={handleLogout}
       />
+      <DrawerItem
+        label="Delete Account"
+        labelStyle={{ fontWeight: '600', color: '#f00' }}
+        icon={({ color, size }) => (
+          <FontAwesome name="trash" color={color} size={size} />
+        )}
+        onPress={() =>
+          Alert.alert(
+            "Delete Account",
+            "Are you sure? This can't be undone.",
+            [
+              { text: "Cancel", style: "cancel" },
+              { text: "Delete", style: "destructive", onPress: handleDeleteAccount },
+            ],
+            { cancelable: true }
+          )
+        }
+      />
     </DrawerContentScrollView>
   );
 }
@@ -171,7 +203,9 @@ function DrawerNavigator({ user, setUser }) {
 
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props} setUser={setUser} />}
+      drawerContent={(props) => (
+        <CustomDrawerContent {...props} user={user} setUser={setUser} />
+      )}
       screenOptions={{
         headerShown: false,
         drawerStyle: { backgroundColor: darkMode ? '#222' : '#fff' },
@@ -180,24 +214,16 @@ function DrawerNavigator({ user, setUser }) {
       }}
     >
       <Drawer.Screen name="Home" options={{ drawerLabel: 'Reminders & Calendar' }}>
-        {(props) => (
-          <TabNavigator
-            {...props}
-            user={user}
-          />
-        )}
+        {(props) => <TabNavigator {...props} user={user} />}
       </Drawer.Screen>
-
       <Drawer.Screen name="Achievements" options={{ drawerLabel: 'Achievements' }}>
         {(props) => <AchievementsStack {...props} user={user} />}
       </Drawer.Screen>
-
       <Drawer.Screen name="Settings">
         {(props) => <SettingsStack {...props} user={user} />}
       </Drawer.Screen>
-
-      <Drawer.Screen name="Support" component={SupportStack} options={{ drawerLabel: 'Support' }} />
-      <Drawer.Screen name="About" component={AboutStack} options={{ drawerLabel: 'About' }} />
+      <Drawer.Screen name="Support" component={SupportStack} />
+      <Drawer.Screen name="About" component={AboutStack} />
     </Drawer.Navigator>
   );
 }
@@ -211,24 +237,19 @@ function AppNavigator() {
       const token = await registerForPushNotificationsAsync();
       if (token) {
         console.log('Registered for push notifications with token:', token);
-        // Optionally send token to backend here
       }
     }
+
     registerNotifications();
 
-    // Listen for notifications received while app is foregrounded
     const notificationListener = Notifications.addNotificationReceivedListener(notification => {
       console.log('Notification received:', notification);
-      // You can update UI or state here if needed
     });
 
-    // Listen for user's interaction with notifications (tap, etc)
     const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
       console.log('Notification response:', response);
-      // Handle navigation or actions here if needed
     });
 
-    // Cleanup listeners on unmount
     return () => {
       notificationListener.remove();
       responseListener.remove();
@@ -241,13 +262,10 @@ function AppNavigator() {
         .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
-            const profile = data.profile;
-            setDarkMode(profile.dark_mode);
+            setDarkMode(data.profile.dark_mode);
           }
         })
-        .catch(() => {
-          setDarkMode(true);
-        });
+        .catch(() => setDarkMode(true));
     } else {
       setDarkMode(true);
     }
@@ -262,13 +280,7 @@ function AppNavigator() {
           </Stack.Screen>
         ) : (
           <Stack.Screen name="DrawerMain">
-            {(props) => (
-              <DrawerNavigator
-                {...props}
-                user={user}
-                setUser={setUser}
-              />
-            )}
+            {(props) => <DrawerNavigator {...props} user={user} setUser={setUser} />}
           </Stack.Screen>
         )}
       </Stack.Navigator>
